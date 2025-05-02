@@ -1,0 +1,328 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+// Variables
+@import 'variables';
+
+// Base styles
+body {
+    background: $background-dark url('../imgs/background.jpg') no-repeat center center fixed;
+    background-size: cover;
+    margin: 0;
+    font-family: $font-family;
+    color: $text-primary;
+    min-height: 100vh;
+    display: flex;
+}
+
+// Layout components
+.sidebar {
+    width: 280px;
+    background: $card-bg;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: $spacing-lg 0;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+    &-logo {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        margin-left: $spacing-xl;
+        margin-bottom: $spacing-xl;
+        padding: $spacing-sm $spacing-md;
+        border-radius: $radius-md;
+        background: rgba(255, 255, 255, 0.05);
+        transition: $transition;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        &-img {
+            width: 40px;
+            height: 40px;
+            border-radius: $radius-md;
+            background: transparent;
+            object-fit: contain;
+        }
+
+        &-text {
+            color: $primary-color;
+            font-size: $font-size-xl;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+    }
+
+    &-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: $spacing-xs;
+        margin-bottom: $spacing-md;
+    }
+
+    &-link {
+        color: $text-primary;
+        text-decoration: none;
+        font-size: $font-size-sm;
+        padding: $spacing-md $spacing-lg;
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        border-radius: $radius-sm;
+        transition: $transition;
+        margin: 0 $spacing-md;
+
+        &:hover, &.active {
+            background: $background-light;
+            transform: translateX(4px);
+        }
+
+        .icon {
+            font-size: $font-size-lg;
+            color: $primary-color;
+        }
+    }
+
+    &-login-box {
+        background: $primary-light;
+        border-radius: $radius-lg;
+        padding: $spacing-xl $spacing-lg;
+        margin: $spacing-lg $spacing-lg $spacing-sm $spacing-lg;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-lg;
+        align-items: center;
+        box-shadow: $shadow-lg;
+        transition: $transition;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: $shadow-lg;
+        }
+    }
+
+    &-login-btn, &-register-btn {
+        width: 100%;
+        border: none;
+        border-radius: $radius-sm;
+        padding: $spacing-md $spacing-xl;
+        font-size: $font-size-md;
+        cursor: pointer;
+        transition: $transition;
+    }
+
+    &-login-btn {
+        background: $primary-color;
+        color: $text-primary;
+        margin-bottom: $spacing-sm;
+
+        &:hover {
+            background: $primary-dark;
+            transform: translateY(-2px);
+        }
+    }
+
+    &-register-btn {
+        background: $text-primary;
+        color: $background-dark;
+
+        &:hover {
+            background: $primary-light;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 280px;
+    right: 0;
+    z-index: 120;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $spacing-md;
+    padding: $spacing-lg $spacing-xl;
+    background: rgba(13, 33, 33, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &-search {
+        background: $background-light;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: $radius-xl;
+        padding: $spacing-md $spacing-lg;
+        color: $text-primary;
+        font-size: $font-size-sm;
+        width: 300px;
+        margin-right: $spacing-md;
+        transition: $transition;
+
+        &:focus {
+            outline: none;
+            border-color: $primary-color;
+            box-shadow: 0 0 0 2px rgba(0, 191, 166, 0.2);
+        }
+
+        &::placeholder {
+            color: $text-secondary;
+        }
+    }
+
+    &-icon {
+        background: $background-light;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: $transition;
+
+        &:hover {
+            background: $primary-color;
+            transform: translateY(-2px);
+        }
+
+        img {
+            width: 22px;
+            height: 22px;
+        }
+    }
+}
+
+// Card components
+.card {
+    background: $card-bg;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    transition: $transition;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+        transform: translateY(-8px);
+        box-shadow: $shadow-lg;
+        border-color: $primary-color;
+    }
+}
+
+.product-card {
+    @extend .card;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: $radius-md;
+        transition: $transition;
+    }
+
+    &:hover &-img {
+        transform: scale(1.05);
+    }
+
+    &-title {
+        color: $text-primary;
+        font-size: $font-size-lg;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    &-price {
+        color: $primary-color;
+        font-size: $font-size-xl;
+        font-weight: 700;
+    }
+}
+
+// Button components
+.btn {
+    border: none;
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-xxl;
+    font-size: $font-size-md;
+    font-weight: 600;
+    cursor: pointer;
+    transition: $transition;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &-primary {
+        background: $primary-color;
+        color: $text-primary;
+        box-shadow: $shadow-md;
+
+        &:hover {
+            background: $primary-dark;
+            transform: translateY(-4px);
+            box-shadow: $shadow-lg;
+        }
+    }
+
+    &-secondary {
+        background: $text-primary;
+        color: $background-dark;
+
+        &:hover {
+            background: $primary-light;
+            transform: translateY(-4px);
+        }
+    }
+}
+
+// Main content
+.main-content {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+    min-height: 100vh;
+    padding: 80px $spacing-xl $spacing-xl $spacing-xl;
+}
+
+// Responsive design
+@media (max-width: $breakpoint-lg) {
+    .sidebar {
+        width: 70px;
+        align-items: center;
+
+        &-logo-text,
+        &-link span:not(.icon),
+        &-login-box,
+        &-contact,
+        &-social-icons {
+            display: none;
+        }
+    }
+
+    .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+    }
+}
+
+@media (max-width: $breakpoint-md) {
+    .navbar-search {
+        width: 200px;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
