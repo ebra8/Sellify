@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
@@ -12,8 +13,24 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'address_id',
-        'status'
+        'status',
+        'total'
     ];
+
+    protected $casts = [
+        'total' => 'decimal:2'
+    ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($order) {
+            if (!isset($order->status)) {
+                $order->status = 'pending';
+            }
+        });
+    }
 
     public function user()
     {
@@ -30,6 +47,11 @@ class Order extends Model
         return $this->hasMany(OrderProduct::class);
     }
 
+    public function history()
+    {
+        return $this->hasMany(OrderHistory::class)->latest();
+    }
+
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_products')
@@ -37,11 +59,28 @@ class Order extends Model
                     ->withTimestamps();
     }
 
-    public function getTotalAttribute()
+    public function calculateTotal()
     {
-        return $this->orderProducts->sum(function ($item) {
-            return $item->price * $item->qty;
-        });
+        try {
+            DB::beginTransaction();
+
+            $total = $this->orderProducts->sum(function ($item) {
+                if (!$item->price || !$item->qty) {
+                    return 0;
+                }
+                return $item->price * $item->qty;
+            });
+            
+            $this->total = $total;
+            $this->save();
+
+            DB::commit();
+            return $total;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error calculating order total: ' . $e->getMessage());
+            return 0;
+        }
     }
 
     public function getStatusColorAttribute()
@@ -58,5 +97,20 @@ class Order extends Model
             default:
                 return 'secondary';
         }
+    }
+
+    public function validateOrder()
+    {
+        if ($this->orderProducts->isEmpty()) {
+            return false;
+        }
+
+        foreach ($this->orderProducts as $item) {
+            if (!$item->price || !$item->qty || $item->qty <= 0) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -86,11 +86,11 @@ class CartService
         $cart = Session::get('cart', []);
         
         if (isset($cart[$product->id])) {
-            $cart[$product->id]['qty'] += $quantity;
+            $cart[$product->id]['quantity'] += $quantity;
         } else {
             $cart[$product->id] = [
                 'product' => $product,
-                'qty' => $quantity
+                'quantity' => $quantity
             ];
         }
         
@@ -124,7 +124,7 @@ class CartService
         
         if (isset($cart[$product->id])) {
             if ($quantity > 0) {
-                $cart[$product->id]['qty'] = $quantity;
+                $cart[$product->id]['quantity'] = $quantity;
             } else {
                 unset($cart[$product->id]);
             }

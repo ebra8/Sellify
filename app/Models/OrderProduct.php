@@ -16,6 +16,19 @@ class OrderProduct extends Model
         'price'
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($orderProduct) {
+            $orderProduct->order->calculateTotal();
+        });
+
+        static::deleted(function ($orderProduct) {
+            $orderProduct->order->calculateTotal();
+        });
+    }
+
     public function order()
     {
         return $this->belongsTo(Order::class);
@@ -24,5 +37,10 @@ class OrderProduct extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getTotalAttribute()
+    {
+        return $this->price * $this->qty;
     }
 }

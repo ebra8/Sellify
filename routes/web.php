@@ -18,6 +18,7 @@ Route::put('/profile', [App\Http\Controllers\ProfileController::class, 'update']
 Route::get('/categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories.index');
 Route::get('/categories/{category:slug}', [App\Http\Controllers\CategoriesController::class, 'show'])->name('categories.show');
 
+// Public Product Routes
 Route::get('/products', [App\Http\Controllers\ProductsController::class, 'index'])->name('products.index');
 Route::get('/products/search', [App\Http\Controllers\ProductsController::class, 'search'])->name('products.search');
 Route::get('/products/{product:slug}', [App\Http\Controllers\ProductsController::class, 'show'])->name('products.show');
@@ -43,3 +44,6 @@ Auth::routes();
 Route::get('/resources', function () {
     return view('resources');
 })->name('resources');
+
+// Include admin routes
+require __DIR__.'/admin.php';

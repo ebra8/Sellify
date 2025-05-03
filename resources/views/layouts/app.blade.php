@@ -483,6 +483,12 @@
             @auth
                 <div class="menu-section">
                     <div class="menu-section-title">Account</div>
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-tachometer-alt icon"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    @endif
                     <a href="{{ route('profile') }}" class="sidebar-link {{ request()->routeIs('profile') ? 'active' : '' }}">
                         <i class="fas fa-user icon"></i>
                         <span>Profile</span>
@@ -507,13 +513,14 @@
                     </div>
                     <div class="user-details">
                         <div class="user-name">{{ auth()->user()->name }}</div>
-                        <div class="user-role">Customer</div>
+                        <div class="user-role">{{ auth()->user()->isAdmin() ? 'Admin' : 'Customer' }}</div>
                     </div>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="d-inline">
                     @csrf
                     <button type="submit" class="sidebar-link text-danger" style="width: 100%; text-align: left; background: none; border: none; padding: 12px 24px;">
-                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                        <i class="fas fa-sign-out-alt icon"></i>
+                        <span>Logout</span>
                     </button>
                 </form>
             </div>

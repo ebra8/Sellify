@@ -58,15 +58,15 @@
                                         <button type="button" class="quantity-btn" onclick="decrementQuantity(this)">-</button>
                                         <span 
                                                class="quantity-display" 
-                                               data-value="{{ $item['qty'] }}" 
+                                               data-value="{{ $item['quantity'] }}" 
                                                data-max="{{ $item['product']->stock }}"
                                                data-product-id="{{ $item['product']->id }}"
-                                               data-price="{{ $item['product']->price }}">{{ $item['qty'] }}</span>
+                                               data-price="{{ $item['product']->price }}">{{ $item['quantity'] }}</span>
                                         <button type="button" class="quantity-btn" onclick="incrementQuantity(this)">+</button>
                                     </div>
                                 </div>
                                 <div class="cart-item-total">
-                                    ${{ number_format($item['product']->price * $item['qty'], 2) }}
+                                    ${{ number_format($item['product']->price * $item['quantity'], 2) }}
                                 </div>
                                 <button class="cart-item-remove" onclick="removeItem(this)" data-product-id="{{ $item['product']->id }}">
                                     <i class="fas fa-trash"></i>
