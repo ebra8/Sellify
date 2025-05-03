@@ -17,6 +17,16 @@ class Category extends Model
         'slug',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($category) {
+            // Set all related products' category_id to null
+            $category->products()->update(['category_id' => null]);
+        });
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);

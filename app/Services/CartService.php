@@ -10,12 +10,14 @@ use Illuminate\Support\Facades\Session;
 
 class CartService
 {
+    private const GUEST_CART_KEY = 'guest_cart';
+
     public function getCart()
     {
         if (Auth::check()) {
             return $this->getUserCart();
         }
-        return $this->getGuestCart();
+        return $this->getGuestCartWithProducts();
     }
 
     public function addToCart(Product $product, int $quantity = 1)
@@ -50,6 +52,28 @@ class CartService
         return $this->clearGuestCart();
     }
 
+    public function migrateGuestCartToUserCart()
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        $guestCart = $this->getGuestCart();
+        if (empty($guestCart)) {
+            return false;
+        }
+
+        foreach ($guestCart as $productId => $item) {
+            $product = Product::find($productId);
+            if ($product) {
+                $this->addToUserCart($product, $item['quantity']);
+            }
+        }
+
+        $this->clearGuestCart();
+        return true;
+    }
+
     private function getUserCart()
     {
         $user = Auth::user();
@@ -59,7 +83,25 @@ class CartService
 
     private function getGuestCart()
     {
-        return Session::get('cart', []);
+        return Session::get(self::GUEST_CART_KEY, []);
+    }
+
+    private function getGuestCartWithProducts()
+    {
+        $cart = $this->getGuestCart();
+        $cartWithProducts = [];
+
+        foreach ($cart as $productId => $item) {
+            $product = Product::find($productId);
+            if ($product) {
+                $cartWithProducts[$productId] = [
+                    'product' => $product,
+                    'quantity' => $item['quantity']
+                ];
+            }
+        }
+
+        return $cartWithProducts;
     }
 
     private function addToUserCart(Product $product, int $quantity)
@@ -83,19 +125,19 @@ class CartService
 
     private function addToGuestCart(Product $product, int $quantity)
     {
-        $cart = Session::get('cart', []);
+        $cart = $this->getGuestCart();
         
         if (isset($cart[$product->id])) {
             $cart[$product->id]['quantity'] += $quantity;
         } else {
             $cart[$product->id] = [
-                'product' => $product,
+                'product_id' => $product->id,
                 'quantity' => $quantity
             ];
         }
         
-        Session::put('cart', $cart);
-        return $cart;
+        Session::put(self::GUEST_CART_KEY, $cart);
+        return $this->getGuestCartWithProducts();
     }
 
     private function updateUserCartItem(Product $product, int $quantity)
@@ -120,7 +162,7 @@ class CartService
 
     private function updateGuestCartItem(Product $product, int $quantity)
     {
-        $cart = Session::get('cart', []);
+        $cart = $this->getGuestCart();
         
         if (isset($cart[$product->id])) {
             if ($quantity > 0) {
@@ -130,8 +172,8 @@ class CartService
             }
         }
         
-        Session::put('cart', $cart);
-        return $cart;
+        Session::put(self::GUEST_CART_KEY, $cart);
+        return $this->getGuestCartWithProducts();
     }
 
     private function removeFromUserCart(Product $product)
@@ -147,14 +189,14 @@ class CartService
 
     private function removeFromGuestCart(Product $product)
     {
-        $cart = Session::get('cart', []);
+        $cart = $this->getGuestCart();
         
         if (isset($cart[$product->id])) {
             unset($cart[$product->id]);
         }
         
-        Session::put('cart', $cart);
-        return $cart;
+        Session::put(self::GUEST_CART_KEY, $cart);
+        return $this->getGuestCartWithProducts();
     }
 
     private function clearUserCart()
@@ -170,7 +212,7 @@ class CartService
 
     private function clearGuestCart()
     {
-        Session::forget('cart');
+        Session::forget(self::GUEST_CART_KEY);
         return [];
     }
 } 

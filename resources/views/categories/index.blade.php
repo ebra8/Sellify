@@ -1,70 +1,172 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
-@section('title', 'Categories Management')
+@section('title', 'Categories - Sellify')
 
 @section('content')
-<x-admin-card title="Categories Management" :createRoute="route('categories.create')" createText="Create New Category">
-    <x-admin-table :headers="['Category', 'Slug', 'Products', 'Actions']">
-        @forelse($categories as $category)
-            <tr class="hover:bg-gray-50 transition-colors duration-200">
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0 h-10 w-10">
-                            <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <span class="text-lg font-medium text-indigo-600">{{ substr($category->name, 0, 1) }}</span>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <div class="text-sm font-medium text-gray-900">{{ $category->name }}</div>
-                        </div>
-                    </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="text-sm text-gray-500">{{ $category->slug }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="px-3 py-1.5 inline-flex items-center text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                        {{ $category->products_count ?? 0 }} products
-                    </span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div class="flex space-x-3">
-                        <a href="{{ route('categories.edit', $category) }}" 
-                           class="text-indigo-600 hover:text-indigo-900 transition-colors duration-200"
-                           title="Edit Category">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                        </a>
-                        <form action="{{ route('categories.destroy', $category) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" 
-                                    class="text-red-600 hover:text-red-900 transition-colors duration-200"
-                                    onclick="return confirm('Are you sure you want to delete this category?')"
-                                    title="Delete Category">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
-                    No categories found
-                </td>
-            </tr>
-        @endforelse
-    </x-admin-table>
+<div class="categories-container">
+    <div class="section-header">
+        <h1>Categories</h1>
+        <p>Browse our product categories</p>
+    </div>
 
-    <x-slot name="footer">
-        {{ $categories->links() }}
-    </x-slot>
-</x-admin-card>
-@endsection 
+    <div class="categories-grid">
+        @forelse($categories as $category)
+            <a href="{{ route('categories.show', $category->slug) }}" class="category-card">
+                <div class="category-image">
+                    @php
+                        $categoryImages = [
+                            'electronics' => 'electronics.jpg',
+                            'clothing' => 'clothing.jpg',
+                            'home & kitchen' => 'home_kitchen.jpg',
+                            'books' => 'books.jpg',
+                            'sports & outdoors' => 'sports_outdoors.jpg',
+                            'watches' => 'watches.jpg',
+                            'gears' => 'gears.jpg',
+                            'laptops' => 'laptops.png'
+                        ];
+                        
+                        $imageName = strtolower($category->name);
+                        $imageFile = isset($categoryImages[$imageName]) ? $categoryImages[$imageName] : 'default.jpg';
+                    @endphp
+                    <img src="{{ asset('images/categories/' . $imageFile) }}" 
+                         alt="{{ $category->name }}"
+                         onerror="this.src='{{ asset('images/categories/default.jpg') }}'">
+                </div>
+                <div class="category-info">
+                    <h2>{{ $category->name }}</h2>
+                    <div class="category-meta">
+                        <span class="product-count">
+                            <i class="fas fa-box"></i>
+                            {{ $category->products_count ?? 0 }} products
+                        </span>
+                    </div>
+                </div>
+            </a>
+        @empty
+            <div class="no-categories">
+                <p>No categories found.</p>
+            </div>
+        @endforelse
+    </div>
+</div>
+@endsection
+
+@push('styles')
+<style>
+    .categories-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-header h1 {
+        color: var(--text-primary);
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .section-header p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .category-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: var(--transition);
+    }
+
+    .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .category-image {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+        background: var(--background-light);
+    }
+
+    .category-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .category-card:hover .category-image img {
+        transform: scale(1.05);
+    }
+
+    .category-info {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .category-info h2 {
+        margin: 0 0 10px;
+        font-size: 1.4rem;
+        color: var(--text-primary);
+    }
+
+    .category-meta {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .product-count {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
+
+    .product-count i {
+        color: var(--primary-color);
+    }
+
+    .no-categories {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 40px;
+        background: var(--card-bg);
+        border-radius: 16px;
+    }
+
+    .no-categories p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .categories-grid {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .categories-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+@endpush 

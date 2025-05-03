@@ -130,10 +130,6 @@
             text-align: center;
         }
 
-        .sidebar-link.dashboard .icon {
-            color: #ff4444;
-        }
-
         /* User Menu Styles */
         .user-menu {
             margin-top: auto;
@@ -465,46 +461,48 @@
 
         <nav class="sidebar-menu">
             <div class="menu-section">
-                <div class="menu-section-title">Main Navigation</div>
+                <div class="menu-section-title">Menu</div>
                 <a href="{{ route('home') }}" class="sidebar-link {{ request()->routeIs('home') ? 'active' : '' }}">
                     <i class="fas fa-home icon"></i>
                     <span>Home</span>
                 </a>
-                <a href="{{ route('categories.index') }}" class="sidebar-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
-                    <i class="fas fa-th-large icon"></i>
-                    <span>Categories</span>
-                </a>
                 <a href="{{ route('products.index') }}" class="sidebar-link {{ request()->routeIs('products.*') ? 'active' : '' }}">
-                    <i class="fas fa-box icon"></i>
+                    <i class="fas fa-shopping-bag icon"></i>
                     <span>Products</span>
                 </a>
-                <a href="{{ route('cart.index') }}" class="sidebar-link {{ request()->routeIs('cart.*') ? 'active' : '' }}">
-                    <i class="fas fa-shopping-cart icon"></i>
-                    <span>Cart</span>
+                <a href="{{ route('categories.index') }}" class="sidebar-link {{ request()->routeIs('categories.*') ? 'active' : '' }}">
+                    <i class="fas fa-tags icon"></i>
+                    <span>Categories</span>
                 </a>
-                <a href="{{ route('orders.index') }}" class="sidebar-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
-                    <i class="fas fa-shopping-bag icon"></i>
-                    <span>Orders</span>
-                </a>
-            </div>
-
-            <div class="menu-section">
-                <div class="menu-section-title">Account</div>
-                <a href="{{ auth()->check() ? route('profile.edit') : route('login') }}" class="sidebar-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                    <i class="fas fa-user icon"></i>
-                    <span>Profile</span>
-                </a>
-                @if(auth()->check() && auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="sidebar-link dashboard {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <i class="fas fa-chart-line icon"></i>
-                        <span>Dashboard</span>
-                    </a>
-                @endif
                 <a href="{{ route('about') }}" class="sidebar-link {{ request()->routeIs('about') ? 'active' : '' }}">
                     <i class="fas fa-info-circle icon"></i>
                     <span>About Us</span>
                 </a>
             </div>
+
+            @auth
+                <div class="menu-section">
+                    <div class="menu-section-title">Account</div>
+                    @if(auth()->user()->isAdmin())
+                        <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                            <i class="fas fa-tachometer-alt icon"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    @endif
+                    <a href="{{ route('profile') }}" class="sidebar-link {{ request()->routeIs('profile') ? 'active' : '' }}">
+                        <i class="fas fa-user icon"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a href="{{ route('cart.index') }}" class="sidebar-link {{ request()->routeIs('cart.*') ? 'active' : '' }}">
+                    <i class="fas fa-shopping-cart icon"></i>
+                    <span>Cart</span>
+                    </a>
+                    <a href="{{ route('orders.index') }}" class="sidebar-link {{ request()->routeIs('orders.*') ? 'active' : '' }}">
+                        <i class="fas fa-box icon"></i>
+                        <span>Orders</span>
+                    </a>
+                </div>
+            @endauth
         </nav>
 
         @auth

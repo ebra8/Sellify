@@ -4,20 +4,6 @@
 
 @section('content')
     <div class="checkout-container">
-        @if(session('success'))
-            <div class="notification success">
-                <i class="fas fa-check-circle"></i>
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="notification error">
-                <i class="fas fa-exclamation-circle"></i>
-                {{ session('error') }}
-            </div>
-        @endif
-
         <h1 class="checkout-title">Checkout</h1>
 
         @if((auth()->check() && $cart->cartProducts->count() > 0) || (!auth()->check() && count($cart) > 0))
@@ -527,43 +513,6 @@
             grid-template-columns: 1fr;
         }
     }
-
-    .notification {
-        padding: 15px 20px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        animation: slideIn 0.3s ease-out;
-    }
-
-    .notification.success {
-        background: rgba(0, 191, 166, 0.1);
-        color: var(--primary-color);
-        border: 1px solid var(--primary-color);
-    }
-
-    .notification.error {
-        background: rgba(255, 71, 87, 0.1);
-        color: #ff4757;
-        border: 1px solid #ff4757;
-    }
-
-    .notification i {
-        font-size: 1.2rem;
-    }
-
-    @keyframes slideIn {
-        from {
-            transform: translateY(-20px);
-            opacity: 0;
-        }
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
 </style>
 @endpush
 
@@ -616,19 +565,11 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success notification
-                const notification = document.createElement('div');
-                notification.className = 'notification success';
-                notification.innerHTML = `
-                    <i class="fas fa-check-circle"></i>
-                    ${data.notification.message}
-                `;
-                document.querySelector('.checkout-container').prepend(notification);
-
-                // Redirect after 2 seconds
-                setTimeout(() => {
-                    window.location.href = data.redirect_url;
-                }, 2000);
+                // Show success message
+                showNotification('Order placed successfully!', 'success');
+                
+                // Redirect to order confirmation
+                window.location.href = data.redirect_url;
             } else {
                 throw new Error(data.message || 'Error placing order');
             }

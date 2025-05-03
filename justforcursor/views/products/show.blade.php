@@ -14,17 +14,13 @@
             <div class="product-info">
                 <h1 class="product-title">{{ $product->name }}</h1>
                 <div class="product-meta">
-                    @if($product->category)
-                        <a href="{{ route('categories.show', $product->category->slug) }}" class="product-category">
-                            {{ $product->category->name }}
-                        </a>
-                    @else
-                        <span class="product-category text-gray-400 italic">Uncategorized</span>
-                    @endif
+                    <a href="{{ route('categories.show', $product->category->slug) }}" class="product-category">
+                        {{ $product->category->name }}
+                    </a>
                     <div class="product-stock {{ $product->stock > 0 ? 'in-stock' : 'out-of-stock' }}">
                         {{ $product->stock > 0 ? 'In Stock' : 'Out of Stock' }}
                     </div>
-                </div>
+        </div>
                 <div class="product-price">${{ number_format($product->price, 2) }}</div>
             
                 <div class="product-description">

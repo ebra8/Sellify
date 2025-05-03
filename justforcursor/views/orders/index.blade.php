@@ -35,17 +35,12 @@
                         @foreach($order->orderProducts as $item)
                             <div class="cart-item-content">
                                 <div class="cart-item-image">
-                                    @if($item->product)
-                                        <img src="{{ $item->product->image ? asset('storage/' . $item->product->image) : asset('images/default-product.jpg') }}" 
-                                             alt="{{ $item->product->name }}">
-                                    @else
-                                        <img src="{{ asset('images/default-product.jpg') }}" 
-                                             alt="Product image not available">
-                                    @endif
+                                    <img src="{{ asset('storage/' . $item->product->image) }}" 
+                                         alt="{{ $item->product->name }}">
                                 </div>
                                 <div class="cart-item-details">
-                                    <h3 class="cart-item-title">{{ $item->product ? $item->product->name : 'Product not available' }}</h3>
-                                    <p class="cart-item-description">{{ $item->product ? Str::limit($item->product->description, 100) : 'Product description not available' }}</p>
+                                    <h3 class="cart-item-title">{{ $item->product->name }}</h3>
+                                    <p class="cart-item-description">{{ Str::limit($item->product->description, 100) }}</p>
                                     <div class="cart-item-price">${{ number_format($item->price, 2) }}</div>
                                 </div>
                                 <div class="cart-item-quantity">

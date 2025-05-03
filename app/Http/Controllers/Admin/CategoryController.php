@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::latest()->paginate(10);
+        $categories = Category::withCount('products')->latest()->paginate(10);
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -57,9 +57,13 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        $category->delete();
-
-        return redirect()->route('admin.categories.index')
-            ->with('success', 'Category deleted successfully');
+        try {
+            $category->delete();
+            return redirect()->route('admin.categories.index')
+                ->with('success', 'Category deleted successfully. Related products have been unassigned.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.categories.index')
+                ->with('error', 'Error deleting category: ' . $e->getMessage());
+        }
     }
 } 

@@ -19,7 +19,11 @@ class OrdersController extends Controller
             return redirect()->route('login')->with('error', 'Please login to view your orders');
         }
 
-        $orders = Auth::user()->orders()->latest()->get();
+        $orders = Auth::user()->orders()
+            ->with(['orderProducts.product', 'address'])
+            ->latest()
+            ->get();
+
         return view('orders.index', compact('orders'));
     }
 }

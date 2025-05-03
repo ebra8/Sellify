@@ -7,6 +7,8 @@ Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('ho
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+
 Route::get('/about', [App\Http\Controllers\AboutController::class, 'about'])->name('about'); 
 
 Route::post('/user/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('user.register');
